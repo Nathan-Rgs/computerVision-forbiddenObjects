@@ -3,13 +3,13 @@ data/
 logs/
 *prompt.txt
 *.json
-yolov8n.pt
-
+yolov9m.pt
+ac2-visao-1
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+runs/
 # C extensions
 *.so
 
