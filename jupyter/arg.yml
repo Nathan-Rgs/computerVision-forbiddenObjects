@@ -1,40 +1,48 @@
-# Ultralytics YOLO F_v8.0.0 Hyperparameters
-# Otimizado para Detecção de Objetos Proibidos em Ambientes Industriais
-# Baseado nas considerações de oclusão, iluminação variável e necessidade de tempo real.
-#
-# Para usar: !yolo train data=seu_dataset.yaml model=yolov8s.pt epochs=100 hyp=hyp-industrial-security.yaml
+# Hiperparâmetros Revisados - Alinhados com a Monografia (Cap. 4.4)
 
-lr0: 0.01      # Taxa de aprendizado inicial (AdamW: 0.001, SGD: 0.01)
-lrf: 0.01      # Taxa de aprendizado final (lr0 * lrf)
-momentum: 0.937 # Momentum do otimizador SGD
-weight_decay: 0.0007 # Regularização para evitar overfitting
-warmup_epochs: 3.0   # Épocas de "aquecimento" para estabilizar o início do treino
-warmup_momentum: 0.8 # Momentum inicial do aquecimento
-warmup_bias_lr: 0.1  # Taxa de aprendizado para a camada de bias durante o aquecimento
+# --- Parâmetros de Treinamento (da Monografia) ---
+epochs: 150       # Monografia: 150
+batch: 32         # Monografia: 32
+imgsz: 640        # Monografia: 640x640
+optimizer: AdamW    # Monografia: AdamW
+lr0: 0.001        # Monografia: 0.001 (Taxa de aprendizado inicial para AdamW)
+weight_decay: 0.0007  # Monografia: 0.0007
+cos_lr: true        # Monografia: "agendamento por decaimento cosseno"
+multi_scale: true   # Monografia: "treinamento multiescala"
+ema: true           # Monografia: "Utilizou-se Exponential Moving Average (EMA)"
+
+# --- Parâmetros de Aquecimento (Warmup) ---
+# (Baseado no seu arg.yml original, alinhado com "aquecimento curto" da monografia)
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+lrf: 0.01 # Taxa de aprendizado final (lr0 * lrf) - mantido do arg.yml
 
 # --- Parâmetros de Perda (Loss) ---
-# Foco em localizar bem os objetos (box) e classificá-los corretamente (cls)
-box: 8.5       # Ganho da loss de bounding box (aumentado para priorizar a localização precisa)
-cls: 0.7       # Ganho da loss de classificação (levemente aumentado para dar mais peso à classe correta)
-dfl: 1.5       # Ganho da Distribution Focal Loss (ajuda na precisão da regressão da box)
+# (Mantidos do seu arg.yml original, pois a monografia não os especifica)
+box: 8.5
+cls: 0.7
+dfl: 1.5
 
-# --- Parâmetros de Augmentation (O mais importante para este problema) ---
-# Agressivos para simular as condições do ambiente industrial
-hsv_h: 0.020   # Variação de matiz (cor)
-hsv_s: 0.80    # Variação de saturação (intensidade da cor)
-hsv_v: 0.50    # Variação de brilho (valor)
-degrees: 15.0  # Variação de rotação em graus (+/-)
-translate: 0.15 # Variação de translação (movimento)
-scale: 0.6     # Variação de escala (zoom in/out)
-shear: 5.0     # Variação de cisalhamento (inclinação)
-perspective: 0.0 # Variação de perspectiva
-flipud: 0.0    # Chance de flip vertical (geralmente não usado para objetos do mundo real)
-fliplr: 0.5    # Chance de flip horizontal (bom para a maioria dos objetos)
-mosaic: 1.0    # Chance de usar a técnica Mosaic (excelente para oclusão e objetos pequenos)
-mixup: 0.15    # Chance de usar a técnica MixUp (mistura de imagens para robustez)
-copy_paste: 0.1 # Chance de usar Copy-Paste (aumenta o número de objetos, ótimo para oclusão)
+# --- Parâmetros de Augmentation ---
+# (Mantidos do seu arg.yml. A monografia menciona o uso de aumentação)
+# NOTA: O parâmetro 'augment=True' é implícito ao usar um arquivo 'cfg'.
+hsv_h: 0.020
+hsv_s: 0.80
+hsv_v: 0.50
+degrees: 15.0
+translate: 0.15
+scale: 0.6
+shear: 5.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+mosaic: 1.0
+mixup: 0.15
+copy_paste: 0.1
+erasing: 0.4
 
-# --- Outros ---
-bgr: 0.0       # Chance de inverter canais BGR (pode ajudar se as câmeras variarem)
-erasing: 0.4   # Chance de usar "random erasing" (simula oclusão)
-label_smoothing: 0.0 # Suavização de labels
+# --- Parâmetros de Inferência (Validação) ---
+# (Da Monografia Cap 4.4)
+conf: 0.25
+iou: 0.70
