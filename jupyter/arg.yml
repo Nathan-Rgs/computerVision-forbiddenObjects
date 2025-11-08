@@ -1,15 +1,14 @@
 # Hiperparâmetros Revisados - Alinhados com a Monografia (Cap. 4.4)
 
 # --- Parâmetros de Treinamento (da Monografia) ---
-epochs: 150       # Monografia: 150
-batch: 32         # Monografia: 32
+epochs: 2       # Monografia: 150
+batch: 16         # Monografia: 32
 imgsz: 640        # Monografia: 640x640
 optimizer: AdamW    # Monografia: AdamW
 lr0: 0.001        # Monografia: 0.001 (Taxa de aprendizado inicial para AdamW)
 weight_decay: 0.0007  # Monografia: 0.0007
 cos_lr: true        # Monografia: "agendamento por decaimento cosseno"
 multi_scale: true   # Monografia: "treinamento multiescala"
-ema: true           # Monografia: "Utilizou-se Exponential Moving Average (EMA)"
 
 # --- Parâmetros de Aquecimento (Warmup) ---
 # (Baseado no seu arg.yml original, alinhado com "aquecimento curto" da monografia)
