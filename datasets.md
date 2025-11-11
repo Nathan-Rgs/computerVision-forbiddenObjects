@@ -1,9 +1,5 @@
 # Lista de datasets necessarios para o escopo 
-* Mochilas
-    > https://www.kaggle.com/datasets/samuelayman/backpack
-* Itens cortantes
-    >
-* Ferramentas
-    >
-* Itens inflamáveis
-    >
+* OBJETOS PROIBIDOS
+    >https://github.com/poori-nuna/HOD-Benchmark-Dataset
+* SELOS DE CAIXA PROIBIDOS
+    >https://www.kaggle.com/datasets/anmatngu/hazmat-placard-image-dataset/data
