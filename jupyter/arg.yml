@@ -1,47 +1,107 @@
-# Hiperparâmetros Revisados - Alinhados com a Monografia (Cap. 4.4)
+# --- Parâmetros de Treinamento e Modelo (Otimizado para Velocidade) ---
 
-# --- Parâmetros de Treinamento (da Monografia) ---
-epochs: 2       # Monografia: 150
-batch: 8         # Monografia: 32
-imgsz: 640        # Monografia: 640x640
-optimizer: AdamW    # Monografia: AdamW
-lr0: 0.001        # Monografia: 0.001 (Taxa de aprendizado inicial para AdamW)
-weight_decay: 0.0007  # Monografia: 0.0007
-cos_lr: true        # Monografia: "agendamento por decaimento cosseno"
-multi_scale: true   # Monografia: "treinamento multiescala"
+model: yolov8m.pt
+# ESCOLHA DO MODELO: 's' (Small).
+# POR QUÊ: Mudamos do 'm' (Medium) para o 's' (Small). Ele tem menos parâmetros,
+# o que significa que cada época será significativamente mais rápida para
+# processar. A inferência final também será muito mais rápida.
+
+epochs: 100
+# ÉPOCAS: Duração do treinamento.
+# POR QUÊ: Reduzido de 150 para 100. Se o objetivo é um resultado rápido,
+# 100 épocas (especialmente sem 'mosaic') são frequentemente suficientes
+# para um modelo "bom o suficiente".
+
+batch: 8
+# TAMANHO DO LOTE (BATCH):
+# POR QUÊ: Aumentado de 16 para 64. Este é o **maior ganho de velocidade**
+# que você terá. Assumindo que você não está mais em um sistema embarcado,
+# sua GPU (ex: Colab, 3070, 4080) pode lidar com um lote maior. Isso
+# maximiza o uso da VRAM e processa muito mais imagens por segundo.
+# Se der erro de "Out of Memory", reduza para 32.
+
+imgsz: 640
+# TAMANHO DA IMAGEM:
+# POR QUÊ: Mantido em 640. Poderíamos diminuir para 320 (o que seria
+# *extremamente* mais rápido), mas isso provavelmente destruiria sua
+# capacidade de detectar objetos pequenos como "chaves". Manter 640 com um
+# batch grande é o melhor equilíbrio.
+
+optimizer: SGD
+# OTIMIZADOR:
+# POR QUÊ: Trocado para SGD (Stochastic Gradient Descent). É o otimizador
+# padrão do YOLO, consome um pouco menos de VRAM e é computacionalmente
+# mais leve que o AdamW, contribuindo para a velocidade.
+
+lr0: 0.01
+# TAXA DE APRENDIZADO:
+# POR QUÊ: Ajustado para 0.01, que é o padrão recomendado para SGD.
+
+momentum: 0.937
+# MOMENTUM: (Novo parâmetro para SGD)
+# POR QUÊ: Valor padrão do YOLO para SGD, ajuda a acelerar a convergência.
+
+weight_decay: 0.0005
+# DECAIMENTO DE PESO:
+# POR QUÊ: Valor padrão do YOLO para SGD.
+
+cos_lr: true
+# AGENDADOR COSENO:
+# POR QUÊ: Mantido. Não impacta a velocidade e ajuda na convergência.
 
 # --- Parâmetros de Aquecimento (Warmup) ---
-# (Baseado no seu arg.yml original, alinhado com "aquecimento curto" da monografia)
+# (Ajustados para os padrões do SGD)
 warmup_epochs: 3.0
 warmup_momentum: 0.8
 warmup_bias_lr: 0.1
-lrf: 0.01 # Taxa de aprendizado final (lr0 * lrf) - mantido do arg.yml
+lrf: 0.01
 
 # --- Parâmetros de Perda (Loss) ---
-# (Mantidos do seu arg.yml original, pois a monografia não os especifica)
-box: 8.5
-cls: 0.7
+# (Resetados para os padrões)
+box: 7.5
+cls: 0.5
 dfl: 1.5
+# POR QUÊ: Resetamos para os padrões do YOLOv8. Seus valores (8.5, 0.7)
+# eram para "espremer" mais acurácia. Os padrões são mais leves e
+# perfeitamente adequados para um treino rápido.
 
-# --- Parâmetros de Augmentation ---
-# (Mantidos do seu arg.yml. A monografia menciona o uso de aumentação)
-# NOTA: O parâmetro 'augment=True' é implícito ao usar um arquivo 'cfg'.
-hsv_h: 0.020
-hsv_s: 0.80
-hsv_v: 0.50
-degrees: 15.0
-translate: 0.15
-scale: 0.6
-shear: 5.0
+# --- Parâmetros de Augmentation (A MAIOR MUDANÇA) ---
+# Aqui é onde ganhamos a maior parte da velocidade no carregamento de dados.
+
+mosaic: 0.0
+# MOSAICO:
+# POR QUÊ: **DESLIGADO.** Este é o seu maior gargalo. 'mosaic: 1.0' força
+# o carregador a ler 4 imagens, cortá-las e juntá-las. Desligar isso
+# torna o carregamento de dados (dataloader) imensamente mais rápido.
+
+mixup: 0.0
+# MISTURA (MIXUP):
+# POR QUÊ: **DESLIGADO.** Similar ao mosaic, é computacionalmente caro.
+# Desligar acelera o processo.
+
+copy_paste: 0.0
+# COPIAR E COLAR:
+# POR QUÊ: **DESLIGADO.** Outra augmentation complexa e cara que foi
+# desativada para priorizar a velocidade.
+
+erasing: 0.0
+# APAGAMENTO (CUTOUT):
+# POR QUÊ: **DESLIGADO.** (O valor 0.4 era para oclusão, que não é mais
+# o foco principal).
+
+# (Augmentations simples e rápidas mantidas com valores padrão)
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
 perspective: 0.0
 flipud: 0.0
-fliplr: 0.5
-mosaic: 0.0
-mixup: 0.15
-copy_paste: 0.1
-erasing: 0.4
+fliplr: 0.5 # A única augmentation geométrica mantida, é muito "barata".
 
 # --- Parâmetros de Inferência (Validação) ---
-# (Da Monografia Cap 4.4)
 conf: 0.25
 iou: 0.70
+# POR QUÊ: Mantidos como padrão. Não afetam a velocidade do treinamento.

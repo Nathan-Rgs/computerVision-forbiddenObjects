@@ -13,6 +13,7 @@ runs/
 # C extensions
 *.so
 vaiKrl
+.venv2
 venv.py
 # Distribution / packaging
 .Python
@@ -25,9 +26,11 @@ eggs/
 lib/
 lib64/
 parts/
+yolo*.pt
 sdist/
 var/
 wheels/
+ac2-visao*
 share/python-wheels/
 *.egg-info/
 .installed.cfg
