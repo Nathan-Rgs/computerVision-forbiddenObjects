@@ -1,6 +1,9 @@
 # Project Stuff
 data/
 logs/
+#
+.venv*
+#
 *prompt.txt
 *.json
 yolov9m.pt
@@ -10,6 +13,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 runs/
+yolov*
 # C extensions
 *.so
 vaiKrl
@@ -18,6 +22,7 @@ venv.py
 # Distribution / packaging
 .Python
 build/
+ac2-visao*
 develop-eggs/
 dist/
 downloads/
