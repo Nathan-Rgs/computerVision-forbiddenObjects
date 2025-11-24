@@ -15,13 +15,18 @@ __pycache__/
 runs/
 yolov*
 # C extensions
+jupyter/temp_faster.pth
+jupyter/fasterRcnnProfessor.ipynb
+jupyter/best_faster_rcnn_amp.pth
 *.so
+DatasetCOCO
 vaiKrl
 .venv2
 venv.py
 # Distribution / packaging
 .Python
 build/
+output.fastrcnn.txt
 ac2-visao*
 develop-eggs/
 dist/
