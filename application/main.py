@@ -70,6 +70,7 @@ def get_video_source():
 
 def get_model_weights():
     models = glob.glob("jupyter/Benchmark_Visao/**/weights/best.pt", recursive=True)
+    models += glob.glob("jupyter/**/best_faster_rcnn_amp.pth", recursive=True)
     if not models:
         print("Error: No models found.")
         return None
@@ -115,7 +116,11 @@ def main():
     while camera.is_opened():
         ok, frame = camera.get_frame()
         if not ok:
-            break
+            if camera.is_video_file():
+                camera.reset()
+                continue
+            else:
+                break
 
         # --- ROI and Detection Logic ---
         results = detector.detect(frame)

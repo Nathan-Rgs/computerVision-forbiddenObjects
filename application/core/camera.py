@@ -3,6 +3,7 @@ import cv2
 
 class Camera:
     def __init__(self, source):
+        self.source = source
         self.cap = cv2.VideoCapture(source)
         if not self.cap.isOpened():
             raise RuntimeError(f"Could not open video source: {source}")
@@ -10,6 +11,13 @@ class Camera:
     def get_frame(self):
         ok, frame = self.cap.read()
         return ok, frame
+
+    def is_video_file(self):
+        return isinstance(self.source, str)
+
+    def reset(self):
+        if self.is_video_file():
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     def show_frame(self, frame, title="Frame"):
         cv2.imshow(title, frame)
