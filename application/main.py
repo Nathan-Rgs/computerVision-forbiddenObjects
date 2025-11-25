@@ -70,7 +70,8 @@ def get_video_source():
 
 def get_model_weights():
     models = glob.glob("jupyter/Benchmark_Visao/**/weights/best.pt", recursive=True)
-    models += glob.glob("jupyter/**/best_faster_rcnn_amp.pth", recursive=True)
+    #nao deu para subir o peso da faster rcnn no github
+    # models += glob.glob("jupyter/**/best_faster_rcnn_amp.pth", recursive=True)
     if not models:
         print("Error: No models found.")
         return None
